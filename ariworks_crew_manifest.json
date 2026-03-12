@@ -1,17 +1,17 @@
 {
   "crew": [
     {
-      "name": "Katie",
+      "name": "lunark",
       "title": "founder · engineer",
-      "description": "makes engines, tools, and the occasional chaotic late-night commit. keeps the lights on and the ideas wild.",
+      "description": "5+ years in C#, 3+ years of Multiplayer Networking, and a deep love for low-level systems.",
       "icon": "🌸",
-      "link": "/portfolio",
+      "link": "https://violetv0id.github.io/lunark.github.io/",
       "link_label": "visit portfolio"
     },
     {
       "name": "Poime",
-      "title": "crew member",
-      "description": "the page is theirs to decorate. check out whatever they've cooked up on the other side of that link.",
+      "title": "co-founder · designer",
+      "description": "Your favorite stereotypical Auzzie.",
       "icon": "🌙",
       "link": "https://poime.example.com",
       "link_label": "visit their page"
