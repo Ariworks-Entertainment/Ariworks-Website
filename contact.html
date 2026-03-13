@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Onest:wght@300;400;500&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing:border-box;margin:0;padding:0; }
+    *, *::before, *::after { box-sizing:border-box;margin:0;padding:0;cursor:none; }
     :root {
       --bg:#0d0c10;--bg2:#131118;--surface:#1f1d2e;
       --border:rgba(255,255,255,0.07);--text:#e8e4f0;--muted:#7a748f;
@@ -19,8 +19,8 @@
     body{background:var(--bg);color:var(--text);font-family:'Onest',sans-serif;font-weight:300;overflow-x:hidden;cursor:none;min-height:100vh;}
 
     /* cursor */
-    #cursor { position:fixed;z-index:9999;width:12px;height:12px;background:var(--accent2);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:width .15s,height .15s;mix-blend-mode:difference; }
-    #cursor-ring { position:fixed;z-index:9998;width:36px;height:36px;border:1.5px solid var(--accent2);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:width .35s cubic-bezier(.23,1,.32,1),height .35s cubic-bezier(.23,1,.32,1),opacity .3s;opacity:0.5; }
+    #cursor { position:fixed;z-index:9999;width:12px;height:12px;background:var(--accent2);border-radius:50%;pointer-events:none;top:0;left:0;transition:width .15s,height .15s;mix-blend-mode:difference;will-change:transform; }
+    #cursor-ring { position:fixed;z-index:9998;width:36px;height:36px;border:1.5px solid var(--accent2);border-radius:50%;pointer-events:none;top:0;left:0;transition:width .35s cubic-bezier(.23,1,.32,1),height .35s cubic-bezier(.23,1,.32,1),opacity .3s;opacity:0.5;will-change:transform; }
     body:hover #cursor-ring { opacity:1; }
     
     #starfield{position:fixed;inset:0;z-index:0;pointer-events:none;}
@@ -139,12 +139,12 @@
       <span class="contact-link-arrow">↗</span>
     </a>
 
-    <a href="mailto:hello@ariworks.dev" class="contact-link" data-accent="yellow">
+    <a href="/cdn-cgi/l/email-protection#c0a8a5acacaf80a1b2a9b7afb2abb3eea4a5b6" class="contact-link" data-accent="yellow">
       <div class="contact-link-left">
         <div class="contact-link-icon">✉️</div>
         <div>
           <div class="contact-link-label">email</div>
-          <div class="contact-link-sub">hello@ariworks.dev</div>
+          <div class="contact-link-sub"><span class="__cf_email__" data-cfemail="8de5e8e1e1e2cdecffe4fae2ffe6fea3e9e8fb">[email&#160;protected]</span></div>
         </div>
       </div>
       <span class="contact-link-arrow">↗</span>
@@ -157,11 +157,11 @@
   <p class="footer-copy">© 2026 ariworks_ — all rights reserved & vibes preserved</p>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-(function anim(){cursor.style.left=mx+'px';cursor.style.top=my+'px';rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim);})();
+(function anim(){cursor.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`;rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;requestAnimationFrame(anim);})();
 function bindCursor(el){el.addEventListener('mouseenter',()=>{cursor.style.width='18px';cursor.style.height='18px';ring.style.width='52px';ring.style.height='52px';});el.addEventListener('mouseleave',()=>{cursor.style.width='12px';cursor.style.height='12px';ring.style.width='36px';ring.style.height='36px';});}
 document.querySelectorAll('a,button').forEach(bindCursor);
 const canvas=document.getElementById('starfield'),ctx=canvas.getContext('2d');
