@@ -169,11 +169,12 @@
     <li><a href="#">twitter</a></li>
     <li><a href="#">discord</a></li>
     <li><a href="#">itch.io</a></li>
-    <li><a href="mailto:hello@ariworks.dev">email</a></li>
+    <li><a href="/cdn-cgi/l/email-protection#4028252c2c2f00213229372f322b336e242536">email</a></li>
   </ul>
   <p class="footer-copy">© 2026 ariworks_ — all rights reserved & vibes preserved</p>
 </footer>
-<script>
+
+ <script>
 // ── cursor ──
 const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
 let mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
@@ -277,8 +278,8 @@ async function loadBanners(){
       banner.style.setProperty('--banner-accent', accent);
       banner.style.setProperty('--banner-accent-glow', glow);
       const logoHtml=p.logo_image
-        ? `<img class="banner-logo" src="${p.logo_image}" alt="${p.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">`
-          +`<span class="banner-logo-fallback" style="display:none">${p.title}</span>`
+        ? `<img class="banner-logo" src="${p.logo_image}" alt="${p.title}">`
+          +`<span class="banner-title-text">${p.title}</span>`
         : `<span class="banner-logo-fallback">${p.title}</span>`;
       banner.innerHTML=`
         <div class="banner-topline"></div>
