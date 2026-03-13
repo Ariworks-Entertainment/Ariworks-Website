@@ -26,9 +26,12 @@
     html { scroll-behavior:smooth; }
     body { background:var(--bg);color:var(--text);font-family:'Onest',sans-serif;font-weight:300;overflow-x:hidden;cursor:none;min-height:100vh; }
 
+    /* read progress bar */
+    #read-progress{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--accent4),var(--accent2),var(--accent3));z-index:200;transform:scaleX(0);transform-origin:left;transition:transform .1s linear;}
+
     /* cursor */
-    #cursor{position:fixed;z-index:9999;width:12px;height:12px;background:var(--accent2);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:width .15s,height .15s;mix-blend-mode:difference;}
-    #cursor-ring{position:fixed;z-index:9998;width:36px;height:36px;border:1.5px solid var(--accent2);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:width .35s cubic-bezier(.23,1,.32,1),height .35s cubic-bezier(.23,1,.32,1),opacity .3s;opacity:0.5;}
+    #cursor{position:fixed;z-index:9999;width:12px;height:12px;background:var(--accent2);border-radius:50%;pointer-events:none;top:0;left:0;transition:width .15s,height .15s;will-change:transform;}
+    #cursor-ring{position:fixed;z-index:9998;width:36px;height:36px;border:1.5px solid var(--accent2);border-radius:50%;pointer-events:none;top:0;left:0;transition:width .35s cubic-bezier(.23,1,.32,1),height .35s cubic-bezier(.23,1,.32,1),opacity .3s;opacity:0.5;will-change:transform;}
     body:hover #cursor-ring{opacity:1;}
 
     /* starfield */
@@ -69,8 +72,37 @@
     .post-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,6vw,3.5rem);letter-spacing:-0.03em;line-height:1.05;margin-bottom:20px;opacity:0;animation:fadeUp .8s .4s forwards;}
     .post-subtitle{font-size:1.1rem;color:var(--muted);line-height:1.65;opacity:0;animation:fadeUp .8s .5s forwards;}
 
+    /* authors — stacked for multiple collaborators */
+    .post-authors{display:flex;flex-direction:column;gap:12px;margin-top:28px;opacity:0;animation:fadeUp .8s .6s forwards;}
+    .post-author-row{display:flex;align-items:center;gap:14px;}
+    .post-avatar{width:38px;height:38px;border-radius:50%;background:var(--surface);border:1px solid var(--border);object-fit:cover;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:0.85rem;color:var(--accent2);flex-shrink:0;overflow:hidden;}
+    /* EDIT: give each author a different accent colour by adding a class e.g. .av-blue { color:var(--accent3); } */
+    .post-author-info{display:flex;flex-direction:column;gap:2px;}
+    .post-author-name{font-family:'Onest',sans-serif;font-weight:500;font-size:0.85rem;color:var(--text);}
+    .post-author-role{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;color:var(--muted);}
+    .post-author-sep{width:1px;height:26px;background:var(--border);margin:0 2px;}
+    .post-read-time{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;color:var(--muted);}
+
+    /* inline video */
+    .prose video{width:100%;border-radius:12px;border:1px solid var(--border);margin:32px 0;display:block;background:#000;}
+    /* video inside a figure — caption handled by figcaption */
+    .prose figure video{margin:0;}
+
+    /* gallery — side by side, 2 or 3 columns */
+    .prose .gallery{display:grid;gap:10px;margin:32px 0;}
+    .prose .gallery.col-2{grid-template-columns:repeat(2,1fr);}
+    .prose .gallery.col-3{grid-template-columns:repeat(3,1fr);}
+    .prose .gallery img,.prose .gallery video{width:100%;height:220px;object-fit:cover;border-radius:8px;border:1px solid var(--border);margin:0;display:block;}
+    .prose .gallery-caption{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);letter-spacing:0.06em;text-align:center;margin-top:10px;}
+    @media(max-width:540px){
+      .prose .gallery.col-2,.prose .gallery.col-3{grid-template-columns:1fr;}
+      .prose .gallery img,.prose .gallery video{height:180px;}
+    }
+
     /* divider */
     .post-divider{width:100%;height:1px;background:var(--border);margin:48px 0;opacity:0;animation:fadeUp .6s .6s forwards;}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
     /* ── PROSE STYLES ── */
     .prose{opacity:0;animation:fadeUp .8s .65s forwards;}
@@ -122,7 +154,44 @@
     .post-footer-back:hover{color:var(--text);}
     .post-footer-tag{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:999px;padding:4px 13px;}
 
-    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    /* ── tts reader ── */
+    #tts-btn{position:fixed;bottom:32px;right:32px;z-index:300;width:48px;height:48px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:none;transition:background .2s,border-color .2s,transform .2s;box-shadow:0 4px 24px rgba(0,0,0,0.4);}
+    #tts-btn:hover{background:var(--accent2);color:#0d0c10;border-color:var(--accent2);transform:scale(1.08);}
+    #tts-btn.active{background:var(--accent2);color:#0d0c10;border-color:var(--accent2);}
+    #tts-panel{position:fixed;bottom:92px;right:32px;z-index:300;background:rgba(19,17,24,0.92);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;padding:20px;width:240px;display:flex;flex-direction:column;gap:14px;opacity:0;transform:translateY(10px) scale(0.97);pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
+    #tts-panel.open{opacity:1;transform:none;pointer-events:all;}
+    .tts-label{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+    .tts-controls{display:flex;gap:8px;}
+    .tts-ctrl{flex:1;padding:9px 0;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.06em;cursor:none;transition:background .15s,border-color .15s,color .15s;display:flex;align-items:center;justify-content:center;gap:5px;}
+    .tts-ctrl:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.15);}
+    .tts-ctrl.primary{background:var(--accent2);color:#0d0c10;border-color:var(--accent2);}
+    .tts-ctrl.primary:hover{background:#ffd85a;}
+    .tts-speed{display:flex;align-items:center;gap:10px;}
+    .tts-speed input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:3px;border-radius:2px;background:var(--surface);border:1px solid var(--border);outline:none;cursor:none;}
+    .tts-speed input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent2);cursor:none;border:none;}
+    .tts-speed-val{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--accent2);min-width:28px;text-align:right;}
+    .tts-status{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);min-height:16px;letter-spacing:0.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    /* sentence highlight */
+    .tts-highlight{background:rgba(255,202,58,0.18);border-radius:3px;outline:2px solid rgba(255,202,58,0.35);transition:background .2s;}
+    /* read-from-here hover button */
+    .tts-read-from{display:none;position:absolute;left:-132px;top:50%;transform:translateY(-50%);font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:999px;padding:4px 11px;white-space:nowrap;cursor:none;transition:color .15s,border-color .15s;z-index:10;}
+    .tts-read-from:hover{color:var(--text);border-color:rgba(255,255,255,0.2);}
+    .prose p,.prose h2,.prose h3,.prose li,.prose blockquote{position:relative;}
+    .prose p:hover .tts-read-from,
+    .prose h2:hover .tts-read-from,
+    .prose h3:hover .tts-read-from,
+    .prose li:hover .tts-read-from,
+    .prose blockquote:hover .tts-read-from{display:block;}
+    /* media break continue button */
+    .tts-media-break{display:flex;align-items:center;justify-content:center;margin:16px 0 8px;opacity:0;transition:opacity .3s;}
+    .tts-media-break.visible{opacity:1;}
+    .tts-continue-btn{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;background:var(--accent2);color:#0d0c10;border:none;border-radius:999px;padding:8px 20px;cursor:none;transition:background .15s,transform .15s;display:flex;align-items:center;gap:7px;}
+    .tts-continue-btn:hover{background:#ffd85a;transform:translateY(-1px);}
+    @media(max-width:640px){
+      #tts-btn{bottom:20px;right:20px;}
+      #tts-panel{right:20px;bottom:80px;width:calc(100vw - 40px);}
+      .tts-read-from{display:none !important;}
+    }
 
     /* footer */
     footer{position:relative;z-index:2;background:var(--bg);border-top:1px solid var(--border);padding:48px 24px;text-align:center;}
@@ -142,6 +211,7 @@
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
 <canvas id="starfield"></canvas>
+<div id="read-progress"></div>
 
 <!-- NAV -->
 <nav>
@@ -172,6 +242,30 @@
     <h1 class="post-title">your post title goes here</h1>
     <!-- EDIT: one-line subtitle/hook. delete this p tag if you don't want one -->
     <p class="post-subtitle">a short sentence that hooks the reader. optional — delete if you don't need it.</p>
+
+    <!-- EDIT: authors. duplicate .post-author-row for each collaborator.
+         for a single author, just keep one row.
+         swap the letter in .post-avatar for initials, or replace the div with <img src="..." class="post-avatar">.
+         the read time only needs to appear once — put it on the first row. -->
+    <div class="post-authors">
+      <div class="post-author-row">
+        <div class="post-avatar">A</div>
+        <div class="post-author-info">
+          <span class="post-author-name">author one</span>
+          <span class="post-author-role">role @ ariworks</span>
+        </div>
+        <div class="post-author-sep"></div>
+        <span class="post-read-time">5 min read</span>
+      </div>
+      <!-- EDIT: remove this second row if there's only one author -->
+      <div class="post-author-row">
+        <div class="post-avatar" style="color:var(--accent3)">B</div>
+        <div class="post-author-info">
+          <span class="post-author-name">author two</span>
+          <span class="post-author-role">role @ ariworks</span>
+        </div>
+      </div>
+    </div>
   </header>
 
   <div class="post-divider"></div>
@@ -190,8 +284,39 @@
        <ol><li>numbered</li></ol>
        <hr>  (divider line)
        <a href="">link</a>
+
+       — images —
        <img src="" alt="">
        <figure><img src="" alt=""><figcaption>caption</figcaption></figure>
+
+       — video (autoplay/loop, no controls — good for clips/demos) —
+       <video src="" autoplay loop muted playsinline></video>
+       <figure><video src="" autoplay loop muted playsinline></video><figcaption>caption</figcaption></figure>
+
+       — video (with controls — good for longer recordings) —
+       <video src="" controls></video>
+
+       — gallery (2 columns) —
+       <div class="gallery col-2">
+         <img src="" alt="">
+         <img src="" alt="">
+       </div>
+       <p class="gallery-caption">optional caption</p>
+
+       — gallery (3 columns) —
+       <div class="gallery col-3">
+         <img src="" alt="">
+         <img src="" alt="">
+         <img src="" alt="">
+       </div>
+
+       — mix images and video in a gallery —
+       <div class="gallery col-2">
+         <img src="" alt="">
+         <video src="" autoplay loop muted playsinline></video>
+       </div>
+
+       — callout —
        <div class="callout"><p><strong>note:</strong> callout text here</p></div>
   ═══════════════════════════════════════════ -->
 
@@ -210,7 +335,45 @@ function hello() {
 
     <blockquote>this is a blockquote. good for pulling out an important line or quoting someone. <em>emphasis inside a blockquote looks like this.</em></blockquote>
 
-    <h3>a smaller sub-heading</h3>
+    <h3>images &amp; video</h3>
+
+    <p>a single image with a caption:</p>
+
+    <figure>
+      <img src="your-image.png" alt="describe the image">
+      <figcaption>caption goes here</figcaption>
+    </figure>
+
+    <p>an autoplay looping video (great for gameplay clips or demos):</p>
+
+    <figure>
+      <video src="your-clip.mp4" autoplay loop muted playsinline></video>
+      <figcaption>caption for the video</figcaption>
+    </figure>
+
+    <p>a video with controls (better for longer recordings):</p>
+
+    <video src="your-video.mp4" controls></video>
+
+    <h3>galleries</h3>
+
+    <p>two columns:</p>
+
+    <div class="gallery col-2">
+      <img src="your-image-1.png" alt="">
+      <img src="your-image-2.png" alt="">
+    </div>
+    <p class="gallery-caption">optional caption for the gallery</p>
+
+    <p>three columns — also supports mixing images and video:</p>
+
+    <div class="gallery col-3">
+      <img src="your-image-1.png" alt="">
+      <video src="your-clip.mp4" autoplay loop muted playsinline></video>
+      <img src="your-image-3.png" alt="">
+    </div>
+
+    <h3>other elements</h3>
 
     <p>you can use lists too:</p>
 
@@ -241,14 +404,50 @@ function hello() {
   <p class="footer-copy">© 2026 ariworks_ — all rights reserved & vibes preserved</p>
 </footer>
 
+<!-- ── TTS READER ── -->
+<button id="tts-btn" title="Read aloud" aria-label="Read article aloud">♪</button>
+<div id="tts-panel" role="region" aria-label="Read aloud controls">
+  <div>
+    <div class="tts-label">read aloud</div>
+    <div class="tts-status" id="tts-status">ready</div>
+  </div>
+  <div class="tts-controls">
+    <button class="tts-ctrl primary" id="tts-play">▶ play</button>
+    <button class="tts-ctrl" id="tts-pause" disabled>⏸</button>
+    <button class="tts-ctrl" id="tts-stop" disabled>■</button>
+  </div>
+  <div>
+    <div class="tts-label">speed</div>
+    <div class="tts-speed">
+      <input type="range" id="tts-rate" min="0.5" max="2" step="0.1" value="1.2">
+      <span class="tts-speed-val" id="tts-rate-val">1.2×</span>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── cursor ──
 const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-(function anim(){cursor.style.left=mx+'px';cursor.style.top=my+'px';rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim);})();
+(function anim(){
+  cursor.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`;
+  rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
+  ring.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+  requestAnimationFrame(anim);
+})();
 function bindCursor(el){el.addEventListener('mouseenter',()=>{cursor.style.width='18px';cursor.style.height='18px';ring.style.width='52px';ring.style.height='52px';});el.addEventListener('mouseleave',()=>{cursor.style.width='12px';cursor.style.height='12px';ring.style.width='36px';ring.style.height='36px';});}
 document.querySelectorAll('a,button').forEach(bindCursor);
+
+// ── read progress ──
+const progressBar=document.getElementById('read-progress');
+window.addEventListener('scroll',()=>{
+  const article=document.querySelector('.prose');
+  if(!article)return;
+  const rect=article.getBoundingClientRect();
+  const progress=Math.min(1,Math.max(0,-rect.top/(article.offsetHeight-window.innerHeight+200)));
+  progressBar.style.transform=`scaleX(${progress})`;
+});
 
 // ── starfield ──
 const canvas=document.getElementById('starfield'),ctx=canvas.getContext('2d');
@@ -256,10 +455,252 @@ let W,H,stars=[];
 function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
 resize();window.addEventListener('resize',resize);
 const SC=['#ffffff','#ffe5b4','#6bcfff','#b06bff','#ffca3a'];
-const mk=()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+0.2,c:SC[Math.floor(Math.random()*SC.length)],speed:Math.random()*0.18+0.04,ts:Math.random()*0.02+0.005,to:Math.random()*Math.PI*2,drift:(Math.random()-.5)*0.08});
+const mk=()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+0.2,ci:Math.floor(Math.random()*SC.length),speed:Math.random()*0.18+0.04,ts:Math.random()*0.02+0.005,to:Math.random()*Math.PI*2,drift:(Math.random()-.5)*0.08});
 for(let i=0;i<180;i++)stars.push(mk());
-let t=0;
-(function draw(){ctx.clearRect(0,0,W,H);t+=0.016;stars.forEach(s=>{const a=0.4+0.6*Math.abs(Math.sin(t*s.ts*60+s.to));ctx.save();ctx.globalAlpha=a;ctx.fillStyle=s.c;ctx.shadowColor=s.c;ctx.shadowBlur=s.r>1?4:0;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();ctx.restore();s.y-=s.speed;s.x+=s.drift;if(s.y<-4){s.y=H+4;s.x=Math.random()*W;}});requestAnimationFrame(draw);})();
+let t=0,_lf=0;
+(function draw(now){requestAnimationFrame(draw);if(now-_lf<30)return;_lf=now;ctx.clearRect(0,0,W,H);t+=0.016;for(let ci=0;ci<SC.length;ci++){ctx.fillStyle=SC[ci];for(let i=0;i<stars.length;i++){const s=stars[i];if(s.ci!==ci)continue;ctx.globalAlpha=0.4+0.6*Math.abs(Math.sin(t*s.ts*60+s.to));ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();s.y-=s.speed;s.x+=s.drift;if(s.y<-4){s.y=H+4;s.x=Math.random()*W;}}}ctx.globalAlpha=1;})();
+// ── tts reader ──
+(function(){
+  const btn        = document.getElementById('tts-btn');
+  const panel      = document.getElementById('tts-panel');
+  const playBtn    = document.getElementById('tts-play');
+  const pauseBtn   = document.getElementById('tts-pause');
+  const stopBtn    = document.getElementById('tts-stop');
+  const rateSlider = document.getElementById('tts-rate');
+  const rateVal    = document.getElementById('tts-rate-val');
+  const statusEl   = document.getElementById('tts-status');
+
+  if(!('speechSynthesis' in window)){
+    btn.title='Read aloud not supported in this browser';
+    btn.style.opacity='0.4';
+    btn.onclick=()=>alert('Sorry, your browser doesn\'t support text-to-speech.');
+    return;
+  }
+
+  const synth = window.speechSynthesis;
+  let sentences = [];   // { text, el, mediaAfter? }
+  let idx = 0;
+  let playing = false;
+  let paused  = false;
+  let highlightEl = null;
+
+  // ── panel toggle ──
+  btn.addEventListener('click', ()=>{
+    panel.classList.toggle('open');
+    btn.classList.toggle('active', panel.classList.contains('open'));
+  });
+  document.addEventListener('click', e=>{
+    if(!panel.contains(e.target) && e.target !== btn){
+      panel.classList.remove('open');
+      if(!playing) btn.classList.remove('active');
+    }
+  });
+
+  // ── speed slider ──
+  rateSlider.addEventListener('input', ()=>{
+    rateVal.textContent = parseFloat(rateSlider.value).toFixed(1).replace('.0','') + '×';
+  });
+
+  // ── media elements that should trigger a break ──
+  const MEDIA_SEL = 'img, video, .gallery, figure, pre';
+
+  // ── inject "read from here" buttons into every readable block ──
+  function injectReadFromButtons(){
+    const prose = document.querySelector('.prose');
+    if(!prose) return;
+    prose.querySelectorAll('p,h2,h3,li,blockquote').forEach(block=>{
+      if(block.querySelector('.tts-read-from')) return; // already injected
+      const rfh = document.createElement('button');
+      rfh.className = 'tts-read-from';
+      rfh.textContent = '▶ read from here';
+      rfh.addEventListener('click', e=>{
+        e.stopPropagation();
+        startFrom(block);
+      });
+      block.appendChild(rfh);
+      bindCursor(rfh);
+    });
+  }
+
+  // ── build sentence list, noting which sentences have a media element immediately after ──
+  function buildSentences(){
+    const prose = document.querySelector('.prose');
+    if(!prose) return [];
+    const out = [];
+    const blocks = [...prose.querySelectorAll('p,h2,h3,li,blockquote,figcaption')];
+    blocks.forEach(block=>{
+      // temporarily detach the read-from button so it doesn't bleed into innerText
+      const rfhBtn = block.querySelector('.tts-read-from');
+      if(rfhBtn) rfhBtn.remove();
+      const text = block.innerText.trim();
+      if(rfhBtn) block.appendChild(rfhBtn);
+      if(!text) return;
+      const parts = text.match(/[^.!?…]+[.!?…]+["']?|[^.!?…]+$/g) || [text];
+      // check if there's a media element immediately after this block in the DOM
+      let mediaAfter = null;
+      let next = block.nextElementSibling;
+      // skip figcaptions — check the parent figure's next sibling instead
+      if(block.tagName === 'FIGCAPTION') next = block.closest('figure')?.nextElementSibling;
+      if(next && next.matches(MEDIA_SEL)) mediaAfter = next;
+      else if(next && next.matches('figure')) mediaAfter = next;
+      parts.forEach((s, si)=>{
+        const t = s.trim();
+        if(t.length > 2) out.push({
+          text: t,
+          el: block,
+          // only attach the media break to the LAST sentence of this block
+          mediaAfter: si === parts.length - 1 ? mediaAfter : null
+        });
+      });
+    });
+    return out;
+  }
+
+  // ── media break: pause and show a continue button below the media element ──
+  let activeBreakEl = null;
+  function insertMediaBreak(mediaEl, onContinue){
+    removeMediaBreak();
+    const wrap = document.createElement('div');
+    wrap.className = 'tts-media-break';
+    wrap.id = 'tts-active-break';
+    const continueBtn = document.createElement('button');
+    continueBtn.className = 'tts-continue-btn';
+    continueBtn.innerHTML = '▶ continue reading';
+    continueBtn.addEventListener('click', ()=>{
+      removeMediaBreak();
+      onContinue();
+    });
+    bindCursor(continueBtn);
+    wrap.appendChild(continueBtn);
+    mediaEl.after(wrap);
+    // animate in
+    requestAnimationFrame(()=>wrap.classList.add('visible'));
+    // scroll so both media and button are visible
+    mediaEl.scrollIntoView({ behavior:'smooth', block:'center' });
+    activeBreakEl = wrap;
+  }
+  function removeMediaBreak(){
+    if(activeBreakEl){ activeBreakEl.remove(); activeBreakEl = null; }
+  }
+
+  // ── helpers ──
+  function clearHighlight(){
+    if(highlightEl){ highlightEl.classList.remove('tts-highlight'); highlightEl = null; }
+  }
+  function highlight(el){
+    clearHighlight();
+    if(el){ el.classList.add('tts-highlight'); highlightEl = el; }
+  }
+  function softScrollTo(el){
+    if(!el) return;
+    const rect = el.getBoundingClientRect();
+    const mid  = rect.top + rect.height / 2;
+    const target = window.scrollY + mid - window.innerHeight * 0.45;
+    window.scrollTo({ top: target, behavior:'smooth' });
+  }
+  function setStatus(txt){ statusEl.textContent = txt; }
+  function setButtons(state){
+    playBtn.textContent = state==='paused' ? '▶ resume' : '▶ play';
+    playBtn.disabled    = state==='playing';
+    pauseBtn.disabled   = state!=='playing';
+    stopBtn.disabled    = state==='idle';
+    playing = state==='playing';
+    paused  = state==='paused';
+    btn.classList.toggle('active', state!=='idle');
+  }
+
+  // ── core speak loop ──
+  function speakNext(){
+    if(idx >= sentences.length){ finish(); return; }
+    const s = sentences[idx];
+    highlight(s.el);
+    softScrollTo(s.el);
+    setStatus(`${idx+1} / ${sentences.length}`);
+
+    const u = new SpeechSynthesisUtterance(s.text);
+    u.rate = parseFloat(rateSlider.value);
+    u.lang = document.documentElement.lang || 'en';
+    u.onend = ()=>{
+      if(!playing) return;
+      if(s.mediaAfter){
+        // pause at media — show continue button
+        setButtons('paused');
+        setStatus('paused at media');
+        clearHighlight();
+        idx++;
+        insertMediaBreak(s.mediaAfter, ()=>{
+          setButtons('playing');
+          speakNext();
+        });
+      } else {
+        idx++;
+        speakNext();
+      }
+    };
+    u.onerror = e=>{ if(e.error!=='interrupted'){ setStatus('error — skipping'); idx++; speakNext(); } };
+    synth.speak(u);
+  }
+
+  function finish(){
+    setButtons('idle');
+    clearHighlight();
+    removeMediaBreak();
+    setStatus('done ✦');
+    idx = 0;
+  }
+
+  function stop(){
+    synth.cancel();
+    setButtons('idle');
+    clearHighlight();
+    removeMediaBreak();
+    setStatus('ready');
+    idx = 0;
+  }
+
+  // ── start from a specific block ──
+  function startFrom(block){
+    sentences = buildSentences();
+    if(!sentences.length) return;
+    // find the first sentence belonging to this block
+    const startIdx = sentences.findIndex(s => s.el === block);
+    idx = startIdx >= 0 ? startIdx : 0;
+    synth.cancel();
+    removeMediaBreak();
+    setButtons('playing');
+    panel.classList.add('open');
+    btn.classList.add('active');
+    speakNext();
+  }
+
+  // ── control buttons ──
+  playBtn.addEventListener('click', ()=>{
+    if(paused){
+      synth.resume();
+      setButtons('playing');
+      setStatus(`${idx+1} / ${sentences.length}`);
+      return;
+    }
+    sentences = buildSentences();
+    if(!sentences.length){ setStatus('nothing to read'); return; }
+    idx = 0;
+    synth.cancel();
+    removeMediaBreak();
+    setButtons('playing');
+    speakNext();
+  });
+  pauseBtn.addEventListener('click', ()=>{
+    synth.pause();
+    setButtons('paused');
+    setStatus('paused');
+  });
+  stopBtn.addEventListener('click', stop);
+  window.addEventListener('beforeunload', ()=>synth.cancel());
+
+  // ── init ──
+  injectReadFromButtons();
+  [btn,playBtn,pauseBtn,stopBtn,rateSlider].forEach(bindCursor);
+})();
 </script>
 </body>
 </html>
