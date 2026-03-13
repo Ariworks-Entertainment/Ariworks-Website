@@ -85,17 +85,6 @@
     .banner-content { position:absolute;bottom:0;left:0;right:0;z-index:2;padding:48px 64px;display:flex;align-items:flex-end;justify-content:space-between;gap:32px; }
     .banner-left { display:flex;flex-direction:column;gap:16px; }
     .banner-logo { height:56px;width:auto;object-fit:contain;object-position:left bottom;filter:drop-shadow(0 2px 12px rgba(0,0,0,0.6));opacity:1;transition:opacity .3s; }
-    .banner-title-text {
-      font-family:'Syne',sans-serif;
-      font-weight:700;
-      font-size:clamp(1rem,2.5vw,1.4rem);
-      letter-spacing:-0.02em;
-      color:var(--text);
-      opacity:0.85;
-      margin-top:6px;
-      display:block;
-      text-shadow:0 2px 12px rgba(0,0,0,0.5);
-    }
     .banner-logo-fallback { font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5vw,3.5rem);letter-spacing:-0.04em;line-height:1;color:var(--text);text-shadow:0 2px 24px rgba(0,0,0,0.5); }
     .banner-meta { display:flex;align-items:center;gap:12px; }
     .banner-pill { font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;border-radius:999px;padding:4px 13px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:var(--text);backdrop-filter:blur(8px); }
@@ -180,11 +169,11 @@
     <li><a href="#">twitter</a></li>
     <li><a href="#">discord</a></li>
     <li><a href="#">itch.io</a></li>
-    <li><a href="/cdn-cgi/l/email-protection#036b666f6f6c4362716a746c7168702d676675">email</a></li>
+    <li><a href="mailto:hello@ariworks.dev">email</a></li>
   </ul>
   <p class="footer-copy">© 2026 ariworks_ — all rights reserved & vibes preserved</p>
 </footer>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ── cursor ──
 const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
 let mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
@@ -288,8 +277,8 @@ async function loadBanners(){
       banner.style.setProperty('--banner-accent', accent);
       banner.style.setProperty('--banner-accent-glow', glow);
       const logoHtml=p.logo_image
-        ? `<img class="banner-logo" src="${p.logo_image}" alt="${p.title}">`
-          +`<span class="banner-title-text">${p.title}</span>`
+        ? `<img class="banner-logo" src="${p.logo_image}" alt="${p.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">`
+          +`<span class="banner-logo-fallback" style="display:none">${p.title}</span>`
         : `<span class="banner-logo-fallback">${p.title}</span>`;
       banner.innerHTML=`
         <div class="banner-topline"></div>
@@ -323,4 +312,11 @@ async function loadBanners(){
       bindCursor(banner);
     });
   } catch(err){
-    container.innerHTML='<p style="color:var(--muted);padding:48px;font-family:DM Mono,monospace;font-size
+    container.innerHTML='<p style="color:var(--muted);padding:48px;font-family:DM Mono,monospace;font-size:.9rem">couldn\'t load projects — check ariworks_project_manifest.json</p>';
+    console.error(err);
+  }
+}
+loadBanners();
+</script>
+</body>
+</html>
