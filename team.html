@@ -67,7 +67,8 @@
     .team-card.open .open-icon{font-size:2rem;margin-bottom:12px;opacity:.3;animation:spinSlow 8s linear infinite;}
     @keyframes spinSlow{to{transform:rotate(360deg)}}
     .team-card.open p{color:var(--muted);font-size:.88rem;}
-    .card-avatar{width:56px;height:56px;border-radius:14px;margin-bottom:18px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:rgba(255,255,255,.06);}
+    .card-avatar{width:56px;height:56px;border-radius:14px;margin-bottom:18px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:rgba(255,255,255,.06);overflow:hidden;}
+    .card-avatar img{width:100%;height:100%;object-fit:cover;border-radius:14px;display:block;}
     .card-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1.4rem;letter-spacing:-.02em;margin-bottom:6px;}
     .card-role-pill{display:inline-block;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;border:1px solid;border-radius:999px;padding:3px 12px;margin-bottom:16px;}
     .card-bio{color:var(--muted);font-size:.88rem;line-height:1.6;}
@@ -122,12 +123,12 @@
     <li><a href="https://github.com/Ariworks-Entertainment/">github</a></li>
     <!-- <li><a href="#">twitter</a></li> -->
     <li><a href="https://discord.gg/ADW466aatQ/">discord</a></li>
-    <li><a href="mailto:contact@ariworks.xyz">email</a></li>
+    <li><a href="/cdn-cgi/l/email-protection#01626e6f7560627541607368766e736a722f79787b">email</a></li>
   </ul>
   <p class="footer-copy">© 2026 ariworks_ — all rights reserved</p>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
@@ -154,16 +155,11 @@ async function load(){
       const sp=SPARKLES[i%SPARKLES.length];
       const card=document.createElement('a');
       card.href=m.link||'#';card.className='team-card reveal';card.dataset.theme=String(i%3);
-      card.innerHTML=`<span class="card-sparkle" style="top:${sp[0].t};right:${sp[0].r};--sx:${sp[0].sx};--sy:${sp[0].sy};animation-delay:${sp[0].d}">${sp[0].g}</span><span class="card-sparkle" style="top:${sp[1].t};right:${sp[1].r};--sx:${sp[1].sx};--sy:${sp[1].sy};animation-delay:${sp[1].d}">${sp[1].g}</span><div class="card-avatar">${m.icon}</div><div class="card-name">${m.name}</div><span class="card-role-pill">${m.title}</span><p class="card-bio">${m.description}</p><div class="card-link-hint">${m.link_label} ↗</div>`;
+      const avatarContent=m.avatar?`<img src="${m.avatar}" alt="${m.name}" loading="lazy" onerror="this.parentElement.textContent='${m.icon}'">`:`${m.icon}`;
+      card.innerHTML=`<span class="card-sparkle" style="top:${sp[0].t};right:${sp[0].r};--sx:${sp[0].sx};--sy:${sp[0].sy};animation-delay:${sp[0].d}">${sp[0].g}</span><span class="card-sparkle" style="top:${sp[1].t};right:${sp[1].r};--sx:${sp[1].sx};--sy:${sp[1].sy};animation-delay:${sp[1].d}">${sp[1].g}</span><div class="card-avatar">${avatarContent}</div><div class="card-name">${m.name}</div><span class="card-role-pill">${m.title}</span><p class="card-bio">${m.description}</p><div class="card-link-hint">${m.link_label} ↗</div>`;
       grid.appendChild(card);ro.observe(card);bindCursor(card);
     });
     const open=document.createElement('div');
     open.className='team-card open reveal';
     open.innerHTML='<div class="open-icon">✦</div><p>maybe this is you?<br>ariworks is always growing.</p>';
-    grid.appendChild(open);ro.observe(open);
-  }catch(e){grid.innerHTML='<p style="color:var(--muted);font-size:.9rem">couldn\'t load crew.</p>';}
-}
-load();
-</script>
-</body>
-</html>
+    grid.appendChild(open);ro.ob
