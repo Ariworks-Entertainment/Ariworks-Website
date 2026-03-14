@@ -4,7 +4,8 @@
       "name": "lunark",
       "title": "founder · engineer",
       "description": "5+ years in C#, 3+ years of Multiplayer Networking, and a deep love for low-level systems.",
-      "icon": "Art/lunark.png",
+      "avatar": "Art/lunark.png",
+      "icon": "🤍",
       "link": "https://violetv0id.github.io/lunark.github.io/",
       "link_label": "visit portfolio"
     },
@@ -12,7 +13,8 @@
       "name": "Poime",
       "title": "co-founder · designer",
       "description": "Your favorite stereotypical Auzzie.",
-      "icon": "Art/Poime.png",
+      "avatar": "Art/Poime.png",
+      "icon": "🌙",
       "link": "https://poime.net/",
       "link_label": "visit page"
     }
