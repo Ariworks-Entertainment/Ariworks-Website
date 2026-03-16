@@ -3,7 +3,7 @@
     {
       "name": "lunark",
       "title": "founder · engineer",
-      "description": "5+ years in C#, 3+ years of Multiplayer Networking, and a deep love for low-level systems.",
+      "description": "A girl who is slightly obsessed with C#... Slightly.",
       "avatar": "Art/lunark.png",
       "icon": "🤍",
       "link": "https://violetv0id.github.io/lunark.github.io/",
@@ -12,11 +12,20 @@
     {
       "name": "Poime",
       "title": "co-founder · designer",
-      "description": "Your favorite stereotypical Auzzie.",
+      "description": "Your favorite stereotypical Auzzie. Nerd.",
       "avatar": "Art/Poime.png",
       "icon": "🌙",
       "link": "https://poime.net/",
       "link_label": "visit page"
+    },
+    {
+      "name": "Scuffed",
+      "title": "story & design director",
+      "description": "Lead Designer for Bungie, with enough hours on War Thunder to be considered a war criminal. Professional weeb.",
+      "avatar": "Art/Scuffed.png",
+      "icon": "⛄",
+      "link": "",
+      "link_label": "no link available"
     }
   ]
 }
