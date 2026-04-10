@@ -5,7 +5,7 @@
       "pill": "game engine",
       "description": "A custom game engine built from the ground up — OpenGL rendering, real-time lighting, and a five-year vision for something special.",
       "in_dev": true,
-      "link": "https://violetv0id.github.io/lunark/limeko.html",
+      "link": "limeko.html",
       "banner_type": "video",
       "banner_src": "Art/limeko-banner-v3.mp4",
       "logo_image": "Art/limeko-logo.png",

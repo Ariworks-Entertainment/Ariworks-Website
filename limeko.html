@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Limeko Engine</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+    font-family:"Segoe UI",system-ui,sans-serif;
+    background:#04050a;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* ---------------- STARFIELD ---------------- */
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ---------------- HERO ---------------- */
+.hero{
+    position:relative;
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+.hero video{
+    position:absolute;
+    width:100%;height:100%;
+    object-fit:cover;
+    filter:brightness(.45) contrast(1.2);
+    opacity:.2; /* lets stars show through */
+}
+
+.hero-overlay{
+    position:absolute;inset:0;
+    background:radial-gradient(circle at center,transparent 30%,rgba(4,5,10,.9));
+}
+
+/* bottom fade so video blends into page */
+.hero-fade-bottom{
+    position:absolute;
+    left:0;right:0;bottom:0;
+    height:180px;
+    background:linear-gradient(to bottom, rgba(4,5,10,0) 0%, rgba(4,5,10,1) 85%);
+    pointer-events:none;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    padding:40px 50px;
+    animation:fadeUp 1.2s ease;
+}
+
+/* circular glow */
+.hero-content::before{
+    content:"";
+    position:absolute;
+    inset:-60px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(124,255,198,.18),transparent 65%);
+    filter:blur(40px);
+    z-index:-1;
+}
+
+.hero h1{font-size:clamp(3rem,9vw,7rem);letter-spacing:10px;font-weight:900;display:inline-flex;align-items:center;gap:0.05em}
+
+/* lime logo letter */
+.lime-o{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:1em;
+    height:1em;
+    transform:translateY(0.02em);
+}
+
+.lime-o img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    filter:drop-shadow(0 0 12px rgba(124,255,198,.35));
+}
+.hero p{margin-top:20px;opacity:.85;font-size:1.25rem}
+
+.scroll{position:absolute;bottom:40px;opacity:.6;animation:float 2s infinite ease-in-out}
+
+/* ---------------- SECTIONS ---------------- */
+section{position:relative;max-width:1100px;margin:auto;padding:120px 24px;z-index:1}
+
+.split{
+    display:flex;
+    gap:60px;
+    align-items:center;
+}
+
+.split.right{flex-direction:row-reverse}
+
+.split .text{flex:1}
+
+h2{font-size:2.5rem;margin-bottom:18px}
+
+p{line-height:1.7;opacity:.9;max-width:760px}
+p2{line-height:1;opacity:.6;max-width:600px}
+.wowielink{
+    color:#b8ffd8;
+    text-decoration:none;
+    position:relative;
+    display:inline-block;
+}
+
+.wowielink::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-4px;
+    width:0%;
+    height:2px;
+    background:#b8ffd8;
+    transition:width .25s ease;
+}
+
+.wowielink:hover::after{
+    width:100%;
+}
+
+/* ---------------- WAVY DIVIDER ---------------- */
+.wave{display:block;width:100%;height:120px}
+
+/* ---------------- FEATURE GRID ---------------- */
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:36px;margin-top:50px}
+
+.feature{
+    position:relative;
+    padding:30px;
+    border-radius:16px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(10px);
+    transition:.35s;
+    isolation:isolate;
+    will-change:transform;
+}
+
+/* lift */
+.feature:hover{
+    transform:translateY(-18px) scale(1.035);
+    filter:brightness(1.07);
+
+    box-shadow:
+        0 12px 24px rgba(0,0,0,.6),
+        0 50px 140px rgba(0,0,0,.8),
+        inset 0 0 0 1px rgba(255,255,255,.05);
+}
+
+/* edge sheen */
+.feature::before{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    border-radius:inherit;
+    background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(124,255,198,.25),
+        transparent
+    );
+    opacity:0;
+    transition:.35s;
+    pointer-events:none;
+}
+
+.feature:hover::before{
+    opacity:1;
+}
+
+/* mint glow plane */
+.feature::after{
+    content:"";
+    position:absolute;
+    inset:-40px;
+    border-radius:24px;
+    background:radial-gradient(
+        circle,
+        rgba(52,193,115,.38) 0%,
+        rgba(184,255,216,.20) 40%,
+        transparent 75%
+    );
+    filter:blur(40px);
+    opacity:0;
+    z-index:-1;
+    transition:opacity .35s ease, transform .35s ease;
+}
+
+.feature:hover::after{
+    opacity:1;
+    transform:scale(1.25) translateY(24px);
+}
+
+/* background depth effect */
+.features:hover .feature:not(:hover){
+    transform:scale(.97);
+    opacity:.7;
+}
+
+/* ---------------- SHOWCASE ---------------- */
+
+.showcase{
+    position:relative;
+}
+
+/* page dimmer */
+.showcase-dim{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .35s ease;
+    z-index:5;
+}
+
+/* activated when hovering */
+.showcase-dim.active{
+    opacity:1;
+}
+
+.showcase-card{
+    position:relative;
+    margin-top:40px;
+    border-radius:18px;
+    transform-style:preserve-3d;
+    transition:
+        transform .25s cubic-bezier(.2,.8,.2,1),
+        filter .25s ease;
+    z-index:10;
+}
+
+/* mint glow (stronger + visible) */
+.showcase-card::before{
+    content:"";
+    position:absolute;
+    inset:-60px;
+    border-radius:28px;
+    background:radial-gradient(
+        circle,
+        rgba(52, 193, 115, 0.45) 30%,
+        rgba(184,255,216,.18) 35%,
+        transparent 100%
+    );
+    filter:blur(45px);
+    opacity:.75;
+    z-index:-1;
+    transition:opacity .25s ease, transform .25s ease;
+}
+
+.showcase-card:hover::before{
+    opacity:1;
+    transform:scale(1.1);
+}
+
+.showcase-card img{
+    width:100%;
+    display:block;
+    border-radius:18px;
+    box-shadow:0 40px 120px rgba(0,0,0,.85);
+    transform:translateZ(50px);
+    pointer-events:none;
+}
+
+.carousel{
+    overflow:hidden;
+    border-radius:18px;
+}
+
+.carousel-track{
+    display:flex;
+    transition:transform .45s cubic-bezier(.2,.8,.2,1);
+}
+
+.slide{
+    min-width:100%;
+    flex-shrink:0;
+}
+
+.slide img,
+.slide video,
+.slide iframe{
+    width:100%;
+    display:block;
+    border-radius:18px;
+    box-shadow:0 40px 120px rgba(0,0,0,.85);
+}
+
+/* buttons */
+.carousel-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(0,0,0,.5);
+    border:1px solid rgba(255,255,255,.2);
+    color:white;
+    font-size:28px;
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    z-index:20;
+}
+
+.carousel-btn.prev{ left:12px; }
+.carousel-btn.next{ right:12px; }
+
+/* ---------------- BUTTONS ---------------- */
+.btn{
+    display:inline-block;
+    margin:16px 10px 0;
+    padding:16px 34px;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:700;
+    transition:.25s;
+}
+
+/* important mint chocolate */
+.btn-primary{
+    background:#b8ffd8;
+    color:#2b1a0f;
+    box-shadow:0 10px 30px rgba(184,255,216,.25);
+}
+
+.btn-primary:hover{transform:translateY(-4px)}
+
+/* secondary dark */
+.btn-secondary{
+    background:#151515;
+    color:#ddd;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.btn-secondary:hover{background:#1f1f1f;transform:translateY(-3px)}
+
+/* --- DOWNLOAD SYSTEM --- */
+
+.download-wrapper{
+    position:relative;
+    display:inline-block;
+}
+
+.download-main{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    cursor:pointer;
+}
+
+.download-arrow{
+    opacity:.7;
+    transition:transform .25s ease;
+}
+
+.download-main.open .download-arrow{
+    transform:rotate(180deg);
+}
+
+.download-dropdown{
+    position:absolute;
+    top:100%;
+    left:0;
+    margin-top:10px;
+    min-width:260px;
+    background:#0f1116;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;
+    overflow:hidden;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(-8px);
+    transition:.2s ease;
+    z-index:50;
+}
+
+.download-dropdown.open{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0);
+}
+
+.download-option{
+    padding:12px 16px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.download-option:hover{
+    background:rgba(255,255,255,.05);
+}
+
+.download-option.disabled{
+    opacity:.35;
+    cursor:not-allowed;
+}
+
+/* ---------------- FOOTER ---------------- */
+footer{text-align:center;padding:70px 20px;border-top:1px solid rgba(255,255,255,.08);opacity:.6}
+
+/* ---------------- ANIMATIONS ---------------- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media(max-width:900px){
+    .split,.split.right{flex-direction:column}
+    h2{font-size:2rem}
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="stars"></canvas>
+
+<header class="hero">
+<video autoplay muted loop playsinline>
+<source src="limeko_header.mp4" type="video/mp4">
+</video>
+<div class="hero-overlay"></div>
+<div class="hero-fade-bottom"></div>
+
+<div class="hero-content">
+<h1>
+<span>L</span><span>I</span><span>M</span><span>E</span><span>K</span>
+<span class="lime-o"><img src="limeko_logo.png" alt="Limeko logo"></span>
+</h1>
+<p>A Flexible, Open-Source Game Engine combining the best features into one.</p>
+<p2>Did I mention that it's free?</p2>
+</div>
+
+<div class="scroll">↓ scroll ↓</div>
+</header>
+
+<svg class="wave" viewBox="0 0 1440 320"><path fill="#04050a" d="M0,96L80,112C160,128,320,160,480,170.7C640,181,800,171,960,144C1120,117,1280,75,1360,53.3L1440,32V320H0Z"></path></svg>
+
+<section>
+<h2>Explore</h2>
+<p>Ready to get Creating? Pick your platform, and Download! Or, you could check out the Source-Code & Documentation!</p>
+<p>(No downloads are available yet... That's because Limeko is still in development. Check back in a few weeks!)</p>
+<div class="download-wrapper">
+
+    <button id="downloadMain" class="btn btn-primary download-main">
+        <span id="downloadLabel">Detecting platform...</span>
+        <span id="downloadArrow" class="download-arrow">▾</span>
+    </button>
+
+    <div id="downloadDropdown" class="download-dropdown"></div>
+
+</div>
+<a class="btn btn-secondary" href="https://github.com/violetv0id/Limeko-Engine/tree/main">Source Code</a>
+<a class="btn btn-secondary" href="https://github.com/violetv0id/Limeko-Engine/tree/main/Documentation">Documentation</a>
+</section>
+
+
+
+
+
+<section>
+<h2>Features</h2>
+<div class="features">
+
+<div class="feature">
+<h3>Rendering</h3>
+<p>One Rendering-Pipeline for every need. Just flick a toggle, or find a community-made plugin.</p>
+</div>
+
+<div class="feature">
+<h3>Physics</h3>
+<p>Fast, deterministic Rigidbody simulations wired directly into Entities.</p>
+<p2>(Powered by Bepu Physics!)</p2>
+</div>
+
+<div class="feature">
+<h3>Entities</h3>
+<p>A Flexible component architecture designed for fast iteration and streamlined control.</p>
+</div>
+
+<div class="feature">
+<h3>Tooling</h3>
+<p>Debugging, Fixing, Iterating, Creating, and Developing, all given unique tools to make it easier.</p>
+</div>
+
+<div class="feature">
+<h3>Community</h3>
+<p>Ideas, feedback, and lots of weird suggestions slowly shaping Limeko.</p>
+</div>
+
+<div class="feature">
+<h3>And more...</h3>
+<p>All in one Free, Open-Source program.</p>
+<a class="wowielink"
+   href="https://github.com/violetv0id/Limeko-Engine/blob/main/README.md"
+   target="_blank" rel="noopener">
+   Tell me more!
+</a>
+</div>
+
+</div>
+</section>
+
+<section class="showcase">
+<div class="showcase-dim"></div>
+<h2>In Motion</h2>
+<p>Here, you'll find images of the Engine doing it's job. For now, Have this silly image of a Monkey.</p>
+<p2>^_^</p2>
+<div class="showcase-card">
+
+    <div class="carousel">
+        <div id="carouselTrack" class="carousel-track"></div>
+    </div>
+
+    <button class="carousel-btn prev">‹</button>
+    <button class="carousel-btn next">›</button>
+
+</div>
+</section>
+
+<footer>
+<p>Limeko Engine — GPL v3 — 2026</p>
+</footer>
+
+<script>
+const canvas=document.getElementById('stars');
+const ctx=canvas.getContext('2d');
+let stars=[];
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+window.addEventListener('resize',resize);resize();
+for(let i=0;i<140;i++){stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2,speed:0.2+Math.random()*0.5})}
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='white';stars.forEach(s=>{s.y+=s.speed;if(s.y>canvas.height){s.y=0;s.x=Math.random()*canvas.width}ctx.fillRect(s.x,s.y,s.size,s.size)});requestAnimationFrame(animate)}
+animate();
+</script>
+
+<script>
+const cards = document.querySelectorAll(".showcase-card");
+const dimmer = document.querySelector(".showcase-dim");
+
+cards.forEach(card => {
+
+    card.addEventListener("mouseenter", () => {
+        dimmer.classList.add("active");
+    });
+
+    card.addEventListener("mouseleave", () => {
+        dimmer.classList.remove("active");
+
+        card.style.transform =
+            "perspective(900px) rotateX(0deg) rotateY(0deg) scale(1)";
+    });
+
+    card.addEventListener("mousemove", e => {
+
+        const rect = card.getBoundingClientRect();
+
+        // normalized cursor position (0 → 1)
+        let px = (e.clientX - rect.left) / rect.width;
+        let py = (e.clientY - rect.top) / rect.height;
+
+        // clamp to prevent edge glitches
+        px = Math.max(0, Math.min(1, px));
+        py = Math.max(0, Math.min(1, py));
+
+        // softer tilt (about 2.5x weaker)
+        const rotateY = (px - 0.5) * 10;
+        const rotateX = (0.5 - py) * 10;
+
+        card.style.transform =
+            `perspective(900px)
+             rotateX(${rotateX}deg)
+             rotateY(${rotateY}deg)
+             scale(1.06)`;
+    });
+});
+</script>
+
+<script>
+const track = document.getElementById("carouselTrack");
+let index = 0;
+let slides = [];
+
+function extractYouTubeID(url){
+    const regExp = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/;
+    const match = url.match(regExp);
+    return match ? match[1] : null;
+}
+
+async function loadShowcase(){
+    const res = await fetch("showcase/showcase.json");
+    const data = await res.json();
+
+    data.items.forEach(item => {
+        const slide = document.createElement("div");
+        slide.className = "slide";
+
+        if(item.type === "image"){
+            const img = document.createElement("img");
+            img.src = item.src;
+            slide.appendChild(img);
+        }
+
+        if(item.type === "video"){
+            const vid = document.createElement("video");
+            vid.src = item.src;
+            vid.controls = true;
+            vid.preload = "metadata";
+            slide.appendChild(vid);
+        }
+
+        if(item.type === "youtube"){
+            const id = extractYouTubeID(item.src);
+            if(id){
+                const iframe = document.createElement("iframe");
+                iframe.src = `https://www.youtube.com/embed/${id}`;
+                iframe.allow =
+                    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allowFullscreen = true;
+                iframe.style.width = "100%";
+                iframe.style.height = "100%";
+                iframe.style.aspectRatio = "16 / 9";
+                iframe.style.border = "none";
+                iframe.style.borderRadius = "18px";
+                slide.appendChild(iframe);
+            }
+        }
+
+        track.appendChild(slide);
+    });
+
+    slides = document.querySelectorAll(".slide");
+}
+
+function updateCarousel(){
+    track.style.transform = `translateX(-${index * 100}%)`;
+}
+
+document.querySelector(".next").onclick = () => {
+    if(!slides.length) return;
+    index = (index + 1) % slides.length;
+    updateCarousel();
+};
+
+document.querySelector(".prev").onclick = () => {
+    if(!slides.length) return;
+    index = (index - 1 + slides.length) % slides.length;
+    updateCarousel();
+};
+
+loadShowcase();
+</script>
+
+</body>
+
+<script>
+
+/* ================================
+   PLATFORM CONFIG
+   ================================ */
+
+const PLATFORMS = {
+    windows: { label: "Windows", supported: true },
+    linux:   { label: "Linux",   supported: false },
+    mac:     { label: "macOS",   supported: false }
+};
+
+/* ================================
+   PLATFORM DETECTION
+   ================================ */
+
+function detectPlatform(){
+    const ua = navigator.userAgent.toLowerCase();
+
+    if(ua.includes("win")) return "windows";
+    if(ua.includes("linux")) return "linux";
+    if(ua.includes("mac")) return "mac";
+
+    return "unknown";
+}
+
+/* ================================
+   GITHUB RELEASE FETCH
+   ================================ */
+
+const GITHUB_API =
+"https://api.github.com/repos/violetv0id/Limeko-Engine/releases/latest";
+
+let latestRelease = null;
+
+async function fetchLatestRelease(){
+    try{
+        const res = await fetch(GITHUB_API);
+        latestRelease = await res.json();
+    }catch(err){
+        console.error("Failed to fetch release:", err);
+    }
+}
+
+function findAssetForPlatform(platform){
+
+    if(!latestRelease || !latestRelease.assets)
+        return null;
+
+    const matchers = {
+        windows: ["win","windows"],
+        linux: ["linux"],
+        mac: ["mac","macos","osx"]
+    };
+
+    const keywords = matchers[platform] || [];
+
+    return latestRelease.assets.find(asset =>
+        keywords.some(k =>
+            asset.name.toLowerCase().includes(k)
+        )
+    );
+}
+
+/* ================================
+   UI SETUP
+   ================================ */
+
+const mainBtn = document.getElementById("downloadMain");
+const dropdown = document.getElementById("downloadDropdown");
+const label = document.getElementById("downloadLabel");
+
+let selectedPlatform = detectPlatform();
+
+/* ================================
+   DROPDOWN BUILD
+   ================================ */
+
+function buildDropdown(){
+
+    Object.entries(PLATFORMS).forEach(([key, data]) => {
+
+        const item = document.createElement("div");
+        item.className = "download-option";
+        item.textContent = data.label;
+
+        item.onclick = () => {
+            selectedPlatform = key;
+            updateMainButton();
+            toggleDropdown(false);
+        };
+
+        dropdown.appendChild(item);
+    });
+}
+
+/* ================================
+   BUTTON STATE
+   ================================ */
+
+function updateMainButton(){
+
+    const data = PLATFORMS[selectedPlatform];
+
+    if(!data){
+        label.textContent = "Platform not supported";
+        mainBtn.disabled = true;
+        return;
+    }
+
+    const asset = findAssetForPlatform(selectedPlatform);
+
+    if(!asset){
+        label.textContent = `${data.label} not available`;
+        mainBtn.disabled = true;
+        mainBtn.style.opacity = ".5";
+        return;
+    }
+
+    mainBtn.disabled = false;
+    mainBtn.style.opacity = "1";
+    label.textContent =
+        `Download ${latestRelease.tag_name} for ${data.label}`;
+}
+
+/* ================================
+   DROPDOWN LOGIC
+   ================================ */
+
+function toggleDropdown(force){
+    const open = force ?? !dropdown.classList.contains("open");
+
+    dropdown.classList.toggle("open", open);
+    mainBtn.classList.toggle("open", open);
+}
+
+mainBtn.addEventListener("click", async e => {
+
+    const rect = mainBtn.getBoundingClientRect();
+    const arrowZone = rect.right - 40;
+
+    // arrow click → dropdown
+    if(e.clientX >= arrowZone){
+        toggleDropdown();
+        return;
+    }
+
+    const asset = findAssetForPlatform(selectedPlatform);
+
+    if(asset){
+        window.location.href = asset.browser_download_url;
+    }
+});
+
+document.addEventListener("click", e=>{
+    if(!mainBtn.contains(e.target) &&
+       !dropdown.contains(e.target)){
+        toggleDropdown(false);
+    }
+});
+
+/* ================================
+   INIT
+   ================================ */
+
+(async function init(){
+
+    label.textContent = "Checking latest release...";
+
+    await fetchLatestRelease();
+
+    buildDropdown();
+    updateMainButton();
+
+})();
+
+</script>
+</html>
